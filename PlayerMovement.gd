@@ -54,12 +54,13 @@ func calculate_acceleration(): ##calculates acceleration and automatically updat
 
 #processing functions 
 func _physics_process(delta): #final physics processing, called by engine
-	var move_and_collide_output #variable to handle raw output of move_and_collide() without breaking true_velocity
+	var collision #variable assigned to store collision data
 	get_inputs() #call the get_inputs function
 	velocity = Vector2(true_velocity.x / speed, true_velocity.y / speed) #find velocity based on previous frame's move_and_collide output
 	calculate_acceleration() #call the calculate_acceleration function
-	velocity += acceleration * delta
-	true_velocity = velocity * speed
-	move_and_collide_output = move_and_collide((true_velocity * delta))
-	if move_and_collide_output != null:
-		true_velocity = move_and_collide_output
+	velocity += acceleration * delta #add acceleration to velocity, accounting for the change in time per frame
+	true_velocity = velocity * speed #multiply velocity by speed to find true_velocity
+	collision = move_and_collide((true_velocity * delta))
+	if collision: #if a collision occurs, bounce off of the collided object, based on that object's 'normal' vector2
+		true_velocity = true_velocity.bounce(collision.normal)
+	rotation = get_global_mouse_position().angle_to_point(position) #rotate to face the mouse
