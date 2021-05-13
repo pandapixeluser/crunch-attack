@@ -1,15 +1,17 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://PlayerMovement.gd" type="Script" id=1]
 [ext_resource path="res://icon.png" type="Texture" id=2]
+[ext_resource path="res://SceneController.gd" type="Script" id=3]
+[ext_resource path="res://Wall texture.png" type="Texture" id=6]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 31.2832, 31.2644 )
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 31.6729, 31.8209 )
+[sub_resource type="RectangleShape2D" id=3]
 
 [node name="Main" type="Node2D"]
+script = ExtResource( 3 )
 
 [node name="Player" type="KinematicBody2D" parent="."]
 position = Vector2( 528.456, 293.988 )
@@ -23,14 +25,67 @@ rotation = 1.5708
 texture = ExtResource( 2 )
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
-visible = false
 current = true
+zoom = Vector2( 2, 2 )
 
-[node name="for scale" type="Sprite" parent="."]
-position = Vector2( 381.305, 288.651 )
-texture = ExtResource( 2 )
+[node name="Area2D" type="Area2D" parent="Player"]
 
-[node name="StaticBody2D" type="StaticBody2D" parent="for scale"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Area2D"]
+shape = SubResource( 1 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="for scale/StaticBody2D"]
-shape = SubResource( 2 )
+[node name="Walls" type="StaticBody2D" parent="."]
+
+[node name="Top Wall" type="CollisionShape2D" parent="Walls"]
+position = Vector2( 2500, 0 )
+scale = Vector2( 250.2, 1 )
+shape = SubResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="Walls/Top Wall"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 6 )
+
+[node name="Bottom Wall" type="CollisionShape2D" parent="Walls"]
+position = Vector2( 2500, 2500 )
+scale = Vector2( 250.2, 1 )
+shape = SubResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="Walls/Bottom Wall"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 6 )
+
+[node name="Left Wall" type="CollisionShape2D" parent="Walls"]
+position = Vector2( 0, 1250 )
+scale = Vector2( 1, 124.6 )
+shape = SubResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="Walls/Left Wall"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 6 )
+
+[node name="Right Wall" type="CollisionShape2D" parent="Walls"]
+position = Vector2( 5000, 1250 )
+scale = Vector2( 1, 124.6 )
+shape = SubResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="Walls/Right Wall"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 6 )
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+margin_left = -471.544
+margin_top = -286.012
+margin_right = 1028.46
+margin_bottom = 293.988
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RichTextLabel" type="RichTextLabel" parent="RichTextLabel"]
+anchor_top = 0.2
+anchor_right = 0.215
+anchor_bottom = 0.5
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
