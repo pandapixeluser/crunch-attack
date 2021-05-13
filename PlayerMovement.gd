@@ -6,11 +6,11 @@ var acceleration = Vector2(0,0) #change in velocity as calculated by calculate_a
 var intent = Vector2() #the intended velocity as decided by player
 var velocity_defecit = Vector2(0,0) #difference between velocity and intent
 var true_velocity = Vector2(0,0)  #velocity multiplied by speed
-var friction = 0.1 #IMPORTANT: apply friction to velocity, NOT true_velocity for standardization's sake. If speed is changed friction will increase in proportion with it
+var friction_rate = 0.008 #IMPORTANT: apply friction to velocity, NOT true_velocity for standardization's sake. If speed is changed friction will increase in proportion with it
 var quick_stop_rate = 0.9 #the rate at which quick stop will slow the player
-var velocity_floor = 0.15 #the velocity at which the engine will stop the player automatically
+var velocity_floor = 0.05 #the velocity at which the engine will stop the player automatically
 var mass = 1
-var speed = 700
+var speed = 500
 
 
 #acceleration curve functions
@@ -18,7 +18,6 @@ func active_accel(input): #active acceleration, where the player is actively try
 	return input
 
 func quick_stop(input): #quick stop, where the player is actively trying to stop their character
-	print ("quick_stop called")
 	if sign(input) == 1: 	#if the player is moving one way, accelerate the other at the defined quick_stop_rate
 		return -quick_stop_rate
 	elif sign(input) == -1:
@@ -27,6 +26,15 @@ func quick_stop(input): #quick stop, where the player is actively trying to stop
 		return 0
 	else: 
 		print("ERROR: quick_stop() error")
+func friction(input):
+	if sign(input) == 1: 	#if the player is moving one way, accelerate the other at the defined quick_stop_rate
+		return -friction_rate*input
+	elif sign(input) == -1:
+		return -friction_rate*input
+	elif input == 0:
+		return 0
+	else: 
+		print("ERROR: friction() error")
 
 #miscellaneous functions
 func get_inputs(): #find the player's inputs
@@ -56,7 +64,6 @@ func calculate_acceleration(): ##calculates acceleration and automatically updat
 func _physics_process(delta): #final physics processing, called by engine
 	var collision #variable assigned to store collision data
 	get_inputs() #call the get_inputs function
-	velocity = Vector2(true_velocity.x / speed, true_velocity.y / speed) #find velocity based on previous frame's move_and_collide output
 	calculate_acceleration() #call the calculate_acceleration function
 	velocity += acceleration * delta #add acceleration to velocity, accounting for the change in time per frame
 	true_velocity = velocity * speed #multiply velocity by speed to find true_velocity
@@ -64,3 +71,5 @@ func _physics_process(delta): #final physics processing, called by engine
 	if collision: #if a collision occurs, bounce off of the collided object, based on that object's 'normal' vector2
 		true_velocity = true_velocity.bounce(collision.normal)
 	rotation = get_global_mouse_position().angle_to_point(position) #rotate to face the mouse
+	velocity = Vector2(true_velocity.x / speed, true_velocity.y / speed) #find velocity based on updated true_velocity data
+	velocity += Vector2(friction(velocity.x),friction(velocity.y)) #decelerate based on friction
