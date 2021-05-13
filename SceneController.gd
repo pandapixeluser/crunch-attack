@@ -8,7 +8,7 @@ var target_delay = 3
 var points_per_target = 50
 export var points = 0
 var points_string = "Points: {points}" 
-var gametime = 10
+var gametime = 120
 var gametime_int 
 var gametime_string = "Time: {time}"
 
