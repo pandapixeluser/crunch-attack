@@ -12,6 +12,10 @@ var velocity_floor = 0.05 #the velocity at which the engine will stop the player
 var mass = 1
 var speed = 500
 
+#bullet variables
+var relative_bullet_speed = 600 #speed at which the bullet will move forward relative to the Player
+var projectile = load("res://Projectile.tscn") #load the scene 'Projectile.tscn'
+
 
 #acceleration curve functions
 func active_accel(input): #active acceleration, where the player is actively trying to move.
@@ -27,19 +31,20 @@ func quick_stop(input): #quick stop, where the player is actively trying to stop
 	else: 
 		print("ERROR: quick_stop() error")
 func friction(input):
-	if sign(input) == 1: 	#if the player is moving one way, accelerate the other at the defined quick_stop_rate
-		return -friction_rate*input
-	elif sign(input) == -1:
-		return -friction_rate*input
-	elif input == 0:
-		return 0
-	else: 
-		print("ERROR: friction() error")
+	return -friction_rate*input #if the player is moving one way, accelerate the other at the defined friction_rate
 
 #miscellaneous functions
+func shoot():
+	var bullet = projectile.instance() #instance projectile as 'bullet'
+	get_parent().add_child(bullet) #spawn bullet as a child of node 'Main' (Player's parent)
+	bullet.transform = transform #move bullet to the Player's position
+	bullet.get_node("KinematicBody2D").velocity = Vector2((cos(rotation) * relative_bullet_speed) + true_velocity.x,(sin(rotation) * relative_bullet_speed) + true_velocity.y) #calculate global bullet speed based on player rotation, player velocity, and defined relative_bullet_speed
+
 func get_inputs(): #find the player's inputs
 	intent.x = (Input.get_action_strength("move_right") - Input.get_action_strength("move_left")) #find x axis intent
 	intent.y = (Input.get_action_strength("move_down") - (Input.get_action_strength("move_up"))) #find y axis intent
+	if Input.is_action_just_pressed("shoot"):
+		shoot()
 	
 func calculate_acceleration(): ##calculates acceleration and automatically updates the variable "acceleration" when complete, returns null
 	acceleration = Vector2(0,0) #reset acceleration from last frame by default
