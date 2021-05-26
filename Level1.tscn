@@ -1,0 +1,151 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://PlayerMovement.gd" type="Script" id=1]
+[ext_resource path="res://Wall texture.png" type="Texture" id=2]
+[ext_resource path="res://icon.png" type="Texture" id=3]
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 31.2832, 31.2644 )
+
+[sub_resource type="NavigationPolygon" id=1]
+
+[sub_resource type="RectangleShape2D" id=2]
+
+[node name="Main" type="Node2D"]
+
+[node name="Player" type="KinematicBody2D" parent="."]
+position = Vector2( 528.456, 293.988 )
+script = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="Player"]
+rotation = 1.5708
+texture = ExtResource( 3 )
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+current = true
+zoom = Vector2( 2, 2 )
+
+[node name="Area2D" type="Area2D" parent="Player"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Area2D"]
+shape = SubResource( 3 )
+
+[node name="Navigation2D" type="Navigation2D" parent="."]
+
+[node name="NavigationPolygonInstance" type="NavigationPolygonInstance" parent="Navigation2D"]
+navpoly = SubResource( 1 )
+
+[node name="Outer Walls" type="StaticBody2D" parent="."]
+
+[node name="Top Wall" type="CollisionShape2D" parent="Outer Walls"]
+position = Vector2( 2500, 0 )
+scale = Vector2( 250.2, 1 )
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Outer Walls/Top Wall"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 2 )
+
+[node name="Bottom Wall" type="CollisionShape2D" parent="Outer Walls"]
+position = Vector2( 2500, 2500 )
+scale = Vector2( 250.2, 1 )
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Outer Walls/Bottom Wall"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 2 )
+
+[node name="Left Wall" type="CollisionShape2D" parent="Outer Walls"]
+position = Vector2( 0, 1250 )
+scale = Vector2( 1, 124.6 )
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Outer Walls/Left Wall"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 2 )
+
+[node name="Right Wall" type="CollisionShape2D" parent="Outer Walls"]
+position = Vector2( 5000, 1250 )
+scale = Vector2( 1, 124.6 )
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Outer Walls/Right Wall"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 2 )
+
+[node name="Inner Walls" type="StaticBody2D" parent="."]
+
+[node name="Top Wall" type="CollisionShape2D" parent="Inner Walls"]
+position = Vector2( 1662.65, 607.974 )
+scale = Vector2( 41.3, 1 )
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Inner Walls/Top Wall"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 2 )
+
+[node name="Top Wall2" type="CollisionShape2D" parent="Inner Walls"]
+position = Vector2( 3336.35, 607.974 )
+scale = Vector2( 41.3, 1 )
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Inner Walls/Top Wall2"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 2 )
+
+[node name="Bottom Wall" type="CollisionShape2D" parent="Inner Walls"]
+position = Vector2( 1663.06, 1889.45 )
+scale = Vector2( 41.3, 1 )
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Inner Walls/Bottom Wall"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 2 )
+
+[node name="Bottom Wall2" type="CollisionShape2D" parent="Inner Walls"]
+position = Vector2( 3339.07, 1891.95 )
+scale = Vector2( 41.3, 1 )
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Inner Walls/Bottom Wall2"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 2 )
+
+[node name="Left Wall" type="CollisionShape2D" parent="Inner Walls"]
+position = Vector2( 1259.43, 811.039 )
+scale = Vector2( 1, 21.3 )
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Inner Walls/Left Wall"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 2 )
+
+[node name="Left Wall2" type="CollisionShape2D" parent="Inner Walls"]
+position = Vector2( 1259.43, 1686.3 )
+scale = Vector2( 1, 21.3 )
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Inner Walls/Left Wall2"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 2 )
+
+[node name="Right Wall" type="CollisionShape2D" parent="Inner Walls"]
+position = Vector2( 3739.11, 812.24 )
+scale = Vector2( 1, 21.3 )
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Inner Walls/Right Wall"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 2 )
+
+[node name="Right Wall2" type="CollisionShape2D" parent="Inner Walls"]
+position = Vector2( 3741.94, 1689.22 )
+scale = Vector2( 1, 21.3 )
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Inner Walls/Right Wall2"]
+scale = Vector2( 0.038, 0.038 )
+texture = ExtResource( 2 )
