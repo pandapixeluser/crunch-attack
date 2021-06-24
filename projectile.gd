@@ -1,10 +1,9 @@
 extends KinematicBody2D
 
-class_name projectile 
+class_name projectile
 
 var velocity = Vector2()
 var friction_rate = 0.002
-
 func set_velocity(input): #setvar for velocity
 	velocity = input
 
@@ -20,6 +19,5 @@ func _physics_process(delta):
 	if collision:
 		velocity = velocity.bounce(collision.normal)
 		if collision.collider.has_method("hit"):
-			collision.collider.hit()
+			collision.collider.hit(Global.bullet_damage)
 		get_parent().queue_free()
-	

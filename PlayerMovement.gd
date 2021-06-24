@@ -1,6 +1,12 @@
 extends KinematicBody2D
 
+#signals
+signal draw_blastshape
+signal activate_blast
+
 #standard variables
+
+#physics variables
 var velocity = Vector2(0,0) #the current velocity
 var acceleration = Vector2(0,0) #change in velocity as calculated by calculate_acceleration()
 var intent = Vector2() #the intended velocity as decided by player
@@ -15,6 +21,10 @@ var speed = 500
 #bullet variables
 var relative_bullet_speed = 600 #speed at which the bullet will move forward relative to the Player
 var projectile = load("res://Projectile.tscn") #load the scene 'Projectile.tscn'
+var ammo = 10 #starting ammo
+var ammolimit = 10 #maximum ammo
+var ammotime = 0 #time since last ammo recharge
+var ammorechargetime = 1 #the time it takes to recharge one bullet
 
 
 #acceleration curve functions
@@ -30,22 +40,53 @@ func quick_stop(input): #quick stop, where the player is actively trying to stop
 		return 0
 	else: 
 		print("ERROR: quick_stop() error")
+
 func friction(input):
 	return -friction_rate*input #if the player is moving one way, accelerate the other at the defined friction_rate
 
+#abilities
+
+func blast_start():
+	emit_signal("draw_blastshape")
+
+func blast_release():
+	emit_signal("activate_blast")
+	
+	
+
 #miscellaneous functions
 func shoot():
+	ammo -= 1
 	var bullet = projectile.instance() #instance projectile as 'bullet'
 	get_parent().add_child(bullet) #spawn bullet as a child of node 'Main' (Player's parent)
 	bullet.transform = transform #move bullet to the Player's position
 	bullet.get_node("KinematicBody2D").velocity = Vector2((cos(rotation) * relative_bullet_speed) + true_velocity.x,(sin(rotation) * relative_bullet_speed) + true_velocity.y) #calculate global bullet speed based on player rotation, player velocity, and defined relative_bullet_speed
 
-func get_inputs(): #find the player's inputs
+func ability_start():
+	if Global.ability == "blast":
+		blast_start()
+
+func ability_end():
+	if Global.ability == "blast":
+		blast_release()
+
+func get_inputs(): #find the player's inputs and determine their direct effects
 	intent.x = (Input.get_action_strength("move_right") - Input.get_action_strength("move_left")) #find x axis intent
 	intent.y = (Input.get_action_strength("move_down") - (Input.get_action_strength("move_up"))) #find y axis intent
-	if Input.is_action_just_pressed("shoot"):
+	if (Input.is_action_just_pressed("ability_button")):
+		ability_start()
+	if Input.is_action_just_released("ability_button"):
+		ability_end()
+	if (Input.is_action_just_pressed("shoot") && (ammo > 0)):
 		shoot()
-	
+
+func ammo_recharge(delta): #operations relating to the ammo recharge mechanic
+	ammotime += delta #add time since last function call to ammotime counter 
+	ammo += floor(ammotime/ammorechargetime)
+	if ammo > ammolimit:
+		ammo = ammolimit 
+	ammotime -= floor(ammotime/ammorechargetime)
+
 func calculate_acceleration(): ##calculates acceleration and automatically updates the variable "acceleration" when complete, returns null
 	acceleration = Vector2(0,0) #reset acceleration from last frame by default
 	if (Input.is_action_pressed("quick stop") == true): 	#if quickstop is pushed, ignore all else and use quick_stop function to define acceleration
@@ -64,11 +105,14 @@ func calculate_acceleration(): ##calculates acceleration and automatically updat
 				acceleration.y = active_accel(velocity_defecit.y)
 		elif abs(velocity.x) + abs(velocity.y) < velocity_floor: #if the player character is moving too slowly, and isn't trying to move, just stop the character
 			velocity = Vector2(0,0)
-
+			
 #processing functions 
+func _process(delta): #initial processing, for non-physics calculations
+	ammo_recharge(delta)
+	get_inputs() #get current player inputs and determine their effects
+
 func _physics_process(delta): #final physics processing, called by engine
 	var collision #variable assigned to store collision data
-	get_inputs() #call the get_inputs function
 	calculate_acceleration() #call the calculate_acceleration function
 	velocity += acceleration * delta #add acceleration to velocity, accounting for the change in time per frame
 	true_velocity = velocity * speed #multiply velocity by speed to find true_velocity

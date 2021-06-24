@@ -1,22 +1,19 @@
 [gd_scene load_steps=3 format=2]
 
-[sub_resource type="Curve2D" id=1]
-_data = {
-"points": PoolVector2Array(  )
-}
+[sub_resource type="GDScript" id=2]
+script/source = "extends Node2D
 
-[sub_resource type="CircleShape2D" id=2]
+"
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 2.18867
 
 [node name="Enemy" type="Node2D"]
+script = SubResource( 2 )
 
-[node name="Path2D" type="Path2D" parent="."]
-curve = SubResource( 1 )
+[node name="RigidBody2D" type="RigidBody2D" parent="."]
 
-[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
+[node name="Sprite" type="Sprite" parent="RigidBody2D"]
 
-[node name="KinematicBody2D" type="KinematicBody2D" parent="Path2D/PathFollow2D"]
-
-[node name="Sprite" type="Sprite" parent="Path2D/PathFollow2D/KinematicBody2D"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Path2D/PathFollow2D/KinematicBody2D"]
-shape = SubResource( 2 )
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
+shape = SubResource( 1 )
